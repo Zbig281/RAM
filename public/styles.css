@@ -1,0 +1,163 @@
+﻿/* Resetowanie domyślnych stylów przeglądarki */
+body, h1, h2, p, form, input, button {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #2980b9;
+    }
+
+#formList {
+    margin-top: 20px;
+}
+
+.left-column {
+    float: left;
+    width: 50%;
+}
+
+.right-column {
+    float: left;
+    width: 50%;
+}
+
+.arbeitkarte-item {
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+/* Nowe style dla trybu pełnoekranowego */
+.fullscreen-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.fullscreen-image {
+    max-width: 100%;
+    max-height: 100%;
+    cursor: move; /* Kursor przesuwania dla trybu pełnoekranowego */
+}
+
+/* Dostosuj styl miniaturek */
+.thumbnail-container.multiple-images {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+}
+
+    .thumbnail-container.multiple-images img {
+        width: 100px; /* Możesz zmienić tę wartość */
+        height: auto; /* Ustawienie wysokości na automatyczne dostosowanie proporcji */
+        margin-right: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
+
+.thumbnail.enlarged {
+    transform: scale(2); /* Zwiększenie skali dla efektu powiększenia */
+    cursor: zoom-out; /* Kursor zmiany podczas najechania na powiększoną miniaturkę */
+}
+
+/* Zmniejszenie marginesu między miniaturami */
+.thumbnail-container.multiple-images img:not(:last-child) {
+    margin-right: 2px;
+}
+
+.arbeitkarte-item {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+    .arbeitkarte-item.blue {
+        border-color: blue;
+    }
+
+    .arbeitkarte-item.red {
+        border-color: red;
+    }
+
+    .arbeitkarte-item.yellow {
+        border-color: yellow;
+    }
+
+    .arbeitkarte-item.fertig {
+        border-color: black;
+    }
+
+/* Nowe style dla przycisku usuwania */
+.delete-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px; /* Dodaj odpowiedni margines od pozostałych elementów na prawo */
+}
+
+    .delete-button:hover {
+        background-color: #c0392b;
+    }
+.delete-button-top-right {
+    position: absolute;
+    top: 10px; /* Dostosuj odpowiednio do pozycji */
+    right: 10px; /* Dostosuj odpowiednio do pozycji */
+}

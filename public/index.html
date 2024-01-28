@@ -1,0 +1,53 @@
+﻿<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAM-Anwendungen für Mitarbeiter</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            margin: 0;
+            padding: 0;
+            background: url('/Banner_JMueller.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            color: Black; /* Kolor tekstu na kontraście z tłem obrazu */
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px; /* Dodaj odstęp między przyciskami */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RAM-Anwendungen für Mitarbeiter</h1>
+        <button onclick="navigateToArbeitkartenList()">Felgenspecialist</button>
+
+        <button onclick="navigateToArbeitkartenGlasList()">Glasspecialist</button>
+    </div>
+
+    <script>
+        function navigateToArbeitkartenList() {
+            window.location.href = "/arbeitkarten-list.html";
+        }
+        function navigateToArbeitkartenGlasList() {
+            window.location.href = "/ArbeitkartenGlasList.html"
+        }
+    </script>
+</body>
+</html>

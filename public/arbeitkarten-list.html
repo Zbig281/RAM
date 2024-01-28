@@ -1,0 +1,420 @@
+﻿<!-- public/arbeitkarten-list.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Arbeitkarten List</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/Banner_JMueller.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            color: Black; /* Kolor tekstu na kontraście z tłem obrazu */
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card-container {
+            display: flex;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .info-container {
+            flex: 2;
+            padding: 10px;
+            background-color: #fff; /* Dodano białe tło */
+        }
+
+        .image-container {
+            flex: 2; /* Elastyczność */
+            text-align: center; /* Wyśrodkowanie tekstu */
+            padding: 10px; /* Padding na krawędziach */
+            position: relative; /* Pozycja relative */
+            overflow-x: auto; /* Przewijanie poziome */
+            white-space: nowrap; /* Uniemożliwienie zawijania do nowej linii */
+            max-width: 100%;
+            margin-left: 1px; /* Dodaj margin-left z odpowiednią wartością */
+        }
+
+        .card-container img {
+            max-width: 100px; /* Zmieniono szerokość obrazu na 100px ze skali % */
+            height: 100px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .image-container::-webkit-scrollbar {
+            height: 10px; /* Dodałem pionowy pasek przewijania */
+        }
+
+        .image-container::-webkit-scrollbar-thumb {
+            background-color: #888; /* Kolor pionowego paska przewijania */
+        }
+
+        .image-container::-webkit-scrollbar-track {
+            background-color: #f1f1f1; /* Kolor tła pionowego paska przewijania */
+        }
+
+        .image-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .enlarged-image {
+            max-width: 90%;
+            max-height: 90%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .delete-button {
+            color: white;
+            background-color: red;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .print-button {
+            background-color: #4CAF50; /* Zielony kolor */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: nowrap;
+            /* Usunięto overflow-x: auto; aby umożliwić poziome przewijanie */
+        }
+
+        #activeFormList,
+        #completedFormList {
+            margin-top: 20px; /* Dodaj odstęp od góry dla sekcji aktywnych i zakończonych kart pracy */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Arbeitkarten List</h1>
+        <div class="button-container">
+            <button onclick="neue_arbeitskarte()">Neue Arbeitskarte</button>
+            <button onclick="back_index()">Zurück</button>
+        </div>
+    </div>
+
+    <div class="container" id="activeFormList">
+        <h2>Aktive Arbeitskarte</h2>
+    </div>
+
+    <div class="container" id="completedFormList">
+        <h2>Erledigte Arbeitskarte</h2>
+    </div>
+
+    <div class="container" id="formList"></div>
+
+    <div class="image-overlay" onclick="toggleEnlargedView()">
+        <img class="enlarged-image" src="" alt="Enlarged Image">
+    </div>
+
+    <script>
+        function neue_arbeitskarte() {
+            window.location.href = "/neue-arbeitskarte.html";
+        }
+
+        function back_index() {
+            window.location.href = "/index.html";
+        }
+
+        fetch('/data/data.json')
+            .then(response => response.json())
+            .then(data => {
+                const formList = document.getElementById('formList');
+                formList.dataset.cards = JSON.stringify(data);
+                displayCards(data);
+            })
+            .catch(error => console.error('Fehler beim Herunterladen von Daten:', error));
+
+
+        function formatDateTime(dateTimeString) {
+            const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
+            const dateTime = new Date(dateTimeString);
+            return dateTime.toLocaleDateString('de-DE', options);
+        }
+
+        function restoreInProgress(timestamp) {
+            const confirmation = confirm('Sind Sie sicher, dass Sie die Arbeitskarte wieder zum Leben erwecken können??');
+
+            if (confirmation) {
+                fetch(`/restore-in-progress/${timestamp}`, {
+                    method: 'POST'
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        alert('Die Arbeitskarte ist wieder eingeführt worden!');
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Fehler beim Wiederherstellen der Auftragskarte zur Ausführung:', error);
+                        alert('Fehler beim Wiederherstellen der Auftragskarte für die Ausführung. Erneut versuchen.');
+                    });
+            }
+        }
+
+        function displayCards(data) {
+            const activeFormList = document.getElementById('activeFormList');
+            const completedFormList = document.getElementById('completedFormList');
+
+            // Pobierz oryginalne nazwy sekcji
+            const originalActiveFormListTitle = activeFormList.querySelector('h2').textContent;
+            const originalCompletedFormListTitle = completedFormList.querySelector('h2').textContent;
+
+            // Sortuj karty według terminu
+            const sortedData = Object.entries(data).sort((a, b) => {
+                const dateA = new Date(a[1].formData.lieferfristDateTime);
+                const dateB = new Date(b[1].formData.lieferfristDateTime);
+                return dateA - dateB;
+            });
+
+            // Wyczyść zawartość sekcji
+            activeFormList.innerHTML = '';
+            completedFormList.innerHTML = '';
+
+            // Przywróć oryginalne nazwy sekcji
+            activeFormList.innerHTML = `<h2>${originalActiveFormListTitle}</h2>`;
+            completedFormList.innerHTML = `<h2>${originalCompletedFormListTitle}</h2>`;
+
+
+            for (const [timestamp, cardData] of sortedData) {
+                const cardContainer = document.createElement('div');
+                cardContainer.classList.add('card-container');
+                cardContainer.style.borderColor = cardData.formData.borderColor;
+                cardContainer.id = `card-${timestamp}`;
+
+                const infoContainer = document.createElement('div');
+                infoContainer.classList.add('info-container');
+
+                const cardTitle = document.createElement('h2');
+                cardTitle.classList.add('card-title');
+                cardTitle.innerHTML = `Termin: ${formatDateTime(cardData.formData.lieferfristDateTime)}`;
+
+                const kunde = document.createElement('p');
+                kunde.textContent = `Arbeitskarte Nr: ${cardData.formData.arbeitkarteNr}`;
+
+                const lieferfristDate = document.createElement('p');
+                lieferfristDate.textContent = `Geliefert: ${cardData.formData.lieferfristDate}`;
+
+                const felgenTyp = document.createElement('p');
+                felgenTyp.textContent = `Felgen Typ: ${cardData.formData.felgenTyp}`;
+
+                const kommentare = document.createElement('p');
+                kommentare.textContent = `Kommentare: ${cardData.formData.kommentare || 'Keine Kommentare'}`;
+
+                infoContainer.appendChild(cardTitle);
+                infoContainer.appendChild(kunde);
+                infoContainer.appendChild(lieferfristDate);
+                infoContainer.appendChild(felgenTyp);
+                infoContainer.appendChild(kommentare);
+
+                const imageContainer = document.createElement('div');
+                imageContainer.classList.add('image-container');
+
+                for (const photo of cardData.photos) {
+                    const cardImage = document.createElement('img');
+                    cardImage.src = `/Foto/${photo}`;
+                    cardImage.addEventListener('click', () => toggleEnlargedView(`/Foto/${photo}`));
+
+                    imageContainer.appendChild(cardImage);
+                }
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-button');
+                deleteButton.textContent = 'X';
+                deleteButton.addEventListener('click', () => deleteCard(timestamp));
+
+                const fertigButton = document.createElement('button');
+                fertigButton.textContent = 'Fertig!';
+                fertigButton.addEventListener('click', () => markAsCompleted(timestamp));
+
+                const printButton = document.createElement('button');
+                printButton.classList.add('print-button');
+                printButton.textContent = 'Drucken';
+                printButton.addEventListener('click', () => printCard(timestamp));
+
+                cardContainer.appendChild(infoContainer);
+                cardContainer.appendChild(imageContainer);
+                cardContainer.appendChild(deleteButton);
+
+                // Sprawdź, czy praca jest zakończona czy nie i dodaj odpowiednie przyciski
+                if (cardData.formData.completed === true || cardData.formData.completed === "true") {
+                    const restoreButton = document.createElement('button');
+                    restoreButton.textContent = 'Aktivieren';
+                    restoreButton.addEventListener('click', () => restoreInProgress(timestamp));
+                    cardContainer.appendChild(restoreButton);
+                    completedFormList.appendChild(cardContainer);
+                } else {
+                    cardContainer.appendChild(fertigButton);
+                    cardContainer.appendChild(printButton);
+                    activeFormList.appendChild(cardContainer);
+                }
+            }
+        }
+
+        function toggleEnlargedView(imageSrc) {
+            const imageOverlay = document.querySelector('.image-overlay');
+            const enlargedImage = document.querySelector('.enlarged-image');
+
+            if (imageOverlay.style.display === 'flex') {
+                imageOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            } else {
+                enlargedImage.src = imageSrc;
+                imageOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function deleteCard(timestamp) {
+            const confirmation = confirm('Möchten Sie diese Arbeitskarte wirklich löschen?');
+
+            if (confirmation) {
+                fetch(`/delete/${timestamp}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        alert('Arbeitskarte wurde erfolgreich gelöscht!');
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Fehler beim Löschen der Arbeitskarte:', error);
+                        alert('Fehler beim Löschen der Arbeitskarte. Bitte versuchen Sie es erneut.');
+                    });
+            }
+        }
+
+        function markAsCompleted(timestamp) {
+            const confirmation = confirm('Möchten Sie diese Arbeitskarte als abgeschlossen markieren?');
+
+            if (confirmation) {
+                fetch(`/complete/${timestamp}`, {
+                    method: 'PUT'
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+
+                        // Sprawdź, czy atrybut data-cards jest zdefiniowany
+                        const formList = document.getElementById('formList');
+                        if (formList && formList.dataset.cards) {
+                            // Pobierz kartę o danym timestamp bezpośrednio z dokumentu
+                            const cardData = JSON.parse(formList.dataset.cards)[timestamp];
+
+                            // Zaktualizuj dane karty
+                            if (cardData && cardData.formData) {
+                                cardData.formData.completed = true;
+
+                                // Odśwież widok kart
+                                displayCards(JSON.parse(formList.dataset.cards));
+
+                                // Odśwież stronę
+                                window.location.reload();
+                            } else {
+                                console.error('Falsche Kartendaten:', cardData);
+                            }
+                        } else {
+                            console.error('Kartendaten fehlen im Element mit der ID "formList".');
+                        }
+
+                        alert('Arbeitskarte wurde als abgeschlossen markiert!');
+                    })
+                    .catch(error => {
+                        console.error('Fehler beim Markieren der Arbeitskarte als abgeschlossen:', error);
+                        alert('Fehler beim Markieren der Arbeitskarte als abgeschlossen. Bitte versuchen Sie es erneut.');
+                    });
+            }
+        }
+
+        function printCard(timestamp) {
+            const cardContainer = document.getElementById(`card-${timestamp}`);
+
+            if (cardContainer) {
+                // Klonuj kontener karty przed drukowaniem
+                const printContainer = cardContainer.cloneNode(true);
+
+                // Ukryj przyciski "Fertig!" i "Drucken" w klonie
+                const buttonsToHide = printContainer.querySelectorAll('.fertig-button, .delete-button, .print-button');
+                if (buttonsToHide) {
+                    buttonsToHide.forEach(button => {
+                        button.style.display = 'none';
+                    });
+                }
+
+                // Zmniejsz rozmiar obrazów w klonie
+                const imageContainer = printContainer.querySelector('.image-container');
+                const cardImages = imageContainer.querySelectorAll('img');
+
+                if (cardImages) {
+                    cardImages.forEach(image => {
+                        image.style.maxWidth = '100px'; // Dostosuj maksymalną szerokość obrazu
+                        image.style.height = 'auto';   // Ustawienie automatycznej wysokości dla zachowania proporcji
+                    });
+                }
+
+                // Otwórz okno drukowania
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write('<html><head><title>Drucken</title></head><body>');
+                printWindow.document.write(printContainer.innerHTML);
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.print();
+            } else {
+                console.error('Karte nicht gefunden:', timestamp);
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbeitkarten List</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('/Banner_JMueller.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        header, section, footer {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            color: black; /* Kolor tekstu na kontraście z tłem obrazu */
+            text-align: center; /* Wyśrodkowanie tekstu */
+            background-color: rgba(255, 255, 255, 0.8); /* Dodatkowy kolor tła z przezroczystością */
+            border-radius: 10px; /* Zaokrąglenie rogów */
+            margin: 0 auto; /* Wyśrodkowanie kontenera na stronie */
+            max-width: 600px; /* Maksymalna szerokość kontenera */
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px; /* Dodaj odstęp między przyciskami */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Arbeitkarten List</h1>
+        </header>
+
+        <section>
+            <h2>Willkommen auf der Glasspecialist-Website!</h2>
+            <p>Wir freuen uns, dass Sie den Weg zu uns gefunden haben...</p>
+            <p>Unser Ziel ist es, Ihnen eine zentrale Anlaufstelle für die Verwaltung Ihrer Arbeitkarten zu bieten...</p>
+            <p>Bitte haben Sie Verständnis dafür, dass unsere Website sich derzeit noch in der Entwicklungsphase befindet...</p>
+        </section>
+
+        <section>
+            <h2>Derzeit in Bearbeitung</h2>
+            <p>Unser engagiertes Team arbeitet hart daran, alle Funktionen zu implementieren, die Sie für eine reibungslose Nutzung benötigen...</p>
+            <p>Wir bitten um Geduld und danken Ihnen für Ihr Interesse an Speedy gonzales List...</p>
+        </section>
+
+        <footer>
+            <p>Vielen Dank für Ihr Interesse an Glasspecialist.</p>
+            <p>Ihr RAM Team xD</p>
+        </footer>    
+    
+        <button onclick="back_index()">Zurück</button>
+    </div>
+
+    <script>
+        function back_index() {
+            window.location.href = "/index.html"
+        }
+    </script>
+
+</body>
+</html>
