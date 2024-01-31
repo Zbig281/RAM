@@ -2,7 +2,7 @@
 Page to manage worksheets.
 
 
-Umieść skrypt .bat w folderze, do którego masz łatwy dostęp. Przykładowo, możesz umieścić go w folderze C:\Users\Zbig\source\repos\RAM2\RAM2.
+Umieść skrypt .bat w folderze, do którego masz łatwy dostęp. Przykładowo, możesz umieścić go w folderze C:\RAM
 
 Kliknij prawym przyciskiem myszy na skrócie pliku .bat, a następnie wybierz "Create Shortcut" (Utwórz skrót).
 
