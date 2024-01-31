@@ -1,4 +1,4 @@
-﻿<!-- public/arbeitkarten-list.html -->
+<!-- public/arbeitkarten-list.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -40,9 +40,10 @@
         }
 
         .info-container {
-            flex: 2;
+            flex: 1;
             padding: 10px;
-            background-color: #fff; /* Dodano białe tło */
+            background-color: #fff;
+            text-align: left; /* Zmiana na lewe wyrównanie tekstu */
         }
 
         .image-container {
@@ -94,16 +95,58 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
         }
 
+        .aktivieren-button {
+            color: white;
+            background-color: #40a7d6;
+            border: none;
+            padding: 2px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 30px 1px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
         .delete-button {
             color: white;
             background-color: red;
             border: none;
+            padding: 2px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 30px 1px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .edit-button {
+            color: white;
+            background-color: blue; /* Kolor dla przycisku "Bearbeiten" */
+            border: none;
+            padding: 2px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 30px 1px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .fertig-button {
+            background-color: green; /* Kolor dla przycisku "Fertig!" */
+            border: none;
+            color: white;
             padding: 5px 10px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            margin: 4px 2px;
+            margin: 30px 1px;
             cursor: pointer;
             border-radius: 4px;
         }
@@ -117,7 +160,7 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            margin: 4px 2px;
+            margin: 30px 1px;
             cursor: pointer;
             border-radius: 4px;
         }
@@ -132,6 +175,53 @@
         #completedFormList {
             margin-top: 20px; /* Dodaj odstęp od góry dla sekcji aktywnych i zakończonych kart pracy */
         }
+
+        .edit-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .edit-form {
+            background-color: #fff;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+            .edit-form textarea {
+                width: calc(100% - 20px);
+                margin-bottom: 10px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .edit-form button {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                margin-right: 5px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+                .edit-form button.cancel {
+                    background-color: #ccc;
+                }
     </style>
 </head>
 <body>
@@ -157,6 +247,15 @@
         <img class="enlarged-image" src="" alt="Enlarged Image">
     </div>
 
+    <div class="edit-overlay" id="editOverlay">
+        <div class="edit-form" id="editForm">
+            <h2>Kommentar bearbeiten</h2>
+            <textarea id="editComment" rows="4"></textarea>
+            <button onclick="saveEdit()">Speichern</button>
+            <button class="cancel" onclick="cancelEdit()">Abbrechen</button>
+        </div>
+    </div>
+
     <script>
         function neue_arbeitskarte() {
             window.location.href = "/neue-arbeitskarte.html";
@@ -174,7 +273,6 @@
                 displayCards(data);
             })
             .catch(error => console.error('Fehler beim Herunterladen von Daten:', error));
-
 
         function formatDateTime(dateTimeString) {
             const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
@@ -225,7 +323,6 @@
             activeFormList.innerHTML = `<h2>${originalActiveFormListTitle}</h2>`;
             completedFormList.innerHTML = `<h2>${originalCompletedFormListTitle}</h2>`;
 
-
             for (const [timestamp, cardData] of sortedData) {
                 const cardContainer = document.createElement('div');
                 cardContainer.classList.add('card-container');
@@ -273,7 +370,13 @@
                 deleteButton.textContent = 'X';
                 deleteButton.addEventListener('click', () => deleteCard(timestamp));
 
+                const editButton = document.createElement('button');
+                editButton.classList.add('edit-button'); // Dodaj klasę edit-button
+                editButton.textContent = 'Bearbeiten';
+                editButton.addEventListener('click', () => openEditForm(timestamp));
+
                 const fertigButton = document.createElement('button');
+                fertigButton.classList.add('fertig-button'); // Dodaj klasę fertig-button
                 fertigButton.textContent = 'Fertig!';
                 fertigButton.addEventListener('click', () => markAsCompleted(timestamp));
 
@@ -285,10 +388,12 @@
                 cardContainer.appendChild(infoContainer);
                 cardContainer.appendChild(imageContainer);
                 cardContainer.appendChild(deleteButton);
+                cardContainer.appendChild(editButton);
 
                 // Sprawdź, czy praca jest zakończona czy nie i dodaj odpowiednie przyciski
                 if (cardData.formData.completed === true || cardData.formData.completed === "true") {
                     const restoreButton = document.createElement('button');
+                    restoreButton.classList.add('aktivieren-button');
                     restoreButton.textContent = 'Aktivieren';
                     restoreButton.addEventListener('click', () => restoreInProgress(timestamp));
                     cardContainer.appendChild(restoreButton);
@@ -333,6 +438,61 @@
                         alert('Fehler beim Löschen der Arbeitskarte. Bitte versuchen Sie es erneut.');
                     });
             }
+        }
+        function openEditForm(timestamp) {
+            const editOverlay = document.getElementById('editOverlay');
+            const editForm = document.getElementById('editForm');
+            const editComment = document.getElementById('editComment');
+
+            // Pobierz aktualny komentarz
+            const formList = document.getElementById('formList');
+            const cardData = JSON.parse(formList.dataset.cards)[timestamp];
+            const currentComment = cardData.formData.kommentare || '';
+
+            editComment.value = currentComment; // Ustaw aktualny komentarz w polu tekstowym
+
+            editOverlay.style.display = 'flex';
+            editForm.dataset.timestamp = timestamp; // Zapisz timestamp w atrybucie dataset
+
+            editComment.focus(); // Skupienie na polu tekstowym po otwarciu formularza
+        }
+
+        function saveEdit() {
+            const editOverlay = document.getElementById('editOverlay');
+            const editForm = document.getElementById('editForm');
+            const editComment = document.getElementById('editComment');
+
+            const timestamp = editForm.dataset.timestamp;
+            const newComment = editComment.value;
+
+            fetch(`/edit-comment/${timestamp}`, {  // Zmiana endpointu na '/edit-comment/:timestamp'
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    kommentare: newComment,
+                }),
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    alert('Kommentar wurde erfolgreich bearbeitet!');
+                    editOverlay.style.display = 'none'; // Ukrycie formularza edycji po zapisaniu
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Fehler beim Bearbeiten des Kommentars:', error);
+                    alert('Fehler beim Bearbeiten des Kommentars. Bitte versuchen Sie es erneut.');
+                });
+        }
+
+        function cancelEdit() {
+            const editOverlay = document.getElementById('editOverlay');
+            const editForm = document.getElementById('editForm');
+
+            editOverlay.style.display = 'none';
+            editForm.dataset.timestamp = ''; // Czyszczenie timestamp z atrybutu dataset
         }
 
         function markAsCompleted(timestamp) {
@@ -385,7 +545,7 @@
                 const printContainer = cardContainer.cloneNode(true);
 
                 // Ukryj przyciski "Fertig!" i "Drucken" w klonie
-                const buttonsToHide = printContainer.querySelectorAll('.fertig-button, .delete-button, .print-button');
+                const buttonsToHide = printContainer.querySelectorAll('.fertig-button, .delete-button, .print-button, .edit-button');
                 if (buttonsToHide) {
                     buttonsToHide.forEach(button => {
                         button.style.display = 'none';
@@ -402,6 +562,17 @@
                         image.style.height = 'auto';   // Ustawienie automatycznej wysokości dla zachowania proporcji
                     });
                 }
+
+                // Dodaj dodatkowe style dla wydruku
+                const styleForPrint = document.createElement('style');
+                styleForPrint.innerHTML = `
+            @media print {
+                body {
+                    font-size: 24pt; /* Dostosuj wielkość czcionki dla wydruku */
+                }
+            }
+        `;
+                printContainer.appendChild(styleForPrint);
 
                 // Otwórz okno drukowania
                 const printWindow = window.open('', '_blank');
