@@ -197,6 +197,13 @@
             border-radius: 8px;
         }
 
+            .edit-form label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .edit-form input,
+            .edit-form select,
             .edit-form textarea {
                 width: calc(100% - 20px);
                 margin-bottom: 10px;
@@ -249,9 +256,39 @@
 
     <div class="edit-overlay" id="editOverlay">
         <div class="edit-form" id="editForm">
-            <h2>Kommentar bearbeiten</h2>
-            <textarea id="editComment" rows="4"></textarea>
-            <button onclick="saveEdit()">Speichern</button>
+            <h2>Editieren</h2>
+            <label for="arbeitkarteNr">Arbeitkarte Nr:</label>
+            <input type="text" id="editArbeitkarteNr" name="arbeitkarteNr" required>
+
+
+            <label for="kunde">Kunde:</label>
+            <input type="text" id="editkunde" name="kunde" required>
+
+            <label for="lieferfristDate">Geliefert (nur Datum):</label>
+            <input type="date" id="editlieferfristDate" name="lieferfristDate" required>
+
+            <label for="lieferfristDateTime">Zeitpunkt der Fertigstellung (Datum und Uhrzeit):</label>
+            <input type="datetime-local" id="editlieferfristDateTime" name="lieferfristDateTime" required>
+
+            <label for="borderColor">Rahmenfarbe:</label>
+            <select id="editborderColor" name="borderColor">
+                <option value="blue">Blau</option>
+                <option value="red">Rot</option>
+                <option value="yellow">Gelb</option>
+            </select>
+
+            <label for="felgenTyp">Felgen Typ:</label>
+            <select id="editfelgenTyp" name="felgenTyp">
+                <option value="Mit Reifen">Mit Reifen</option>
+                <option value="Im Auto Montiert">Im Auto Montiert</option>
+                <option value="Nur Felge">Nur Felge</option>
+            </select>
+
+            <label for="kommentare">Kommentare:</label>
+            <textarea id="editkommentare" name="kommentare" rows="4"></textarea>
+
+
+            <button onclick="saveEdit('someTimestamp')">Speichern</button>
             <button class="cancel" onclick="cancelEdit()">Abbrechen</button>
         </div>
     </div>
@@ -336,8 +373,11 @@
                 cardTitle.classList.add('card-title');
                 cardTitle.innerHTML = `Termin: ${formatDateTime(cardData.formData.lieferfristDateTime)}`;
 
+                const arbeitkarteNr = document.createElement('p');
+                arbeitkarteNr.textContent = `Arbeitskarte Nr: ${cardData.formData.arbeitkarteNr}`;
+
                 const kunde = document.createElement('p');
-                kunde.textContent = `Arbeitskarte Nr: ${cardData.formData.arbeitkarteNr}`;
+                kunde.textContent = `Kunde: ${cardData.formData.kunde}`;
 
                 const lieferfristDate = document.createElement('p');
                 lieferfristDate.textContent = `Geliefert: ${cardData.formData.lieferfristDate}`;
@@ -349,6 +389,7 @@
                 kommentare.textContent = `Kommentare: ${cardData.formData.kommentare || 'Keine Kommentare'}`;
 
                 infoContainer.appendChild(cardTitle);
+                infoContainer.appendChild(arbeitkarteNr);
                 infoContainer.appendChild(kunde);
                 infoContainer.appendChild(lieferfristDate);
                 infoContainer.appendChild(felgenTyp);
@@ -371,12 +412,12 @@
                 deleteButton.addEventListener('click', () => deleteCard(timestamp));
 
                 const editButton = document.createElement('button');
-                editButton.classList.add('edit-button'); // Dodaj klasę edit-button
+                editButton.classList.add('edit-button');
                 editButton.textContent = 'Bearbeiten';
                 editButton.addEventListener('click', () => openEditForm(timestamp));
 
                 const fertigButton = document.createElement('button');
-                fertigButton.classList.add('fertig-button'); // Dodaj klasę fertig-button
+                fertigButton.classList.add('fertig-button');
                 fertigButton.textContent = 'Fertig!';
                 fertigButton.addEventListener('click', () => markAsCompleted(timestamp));
 
@@ -405,6 +446,7 @@
                 }
             }
         }
+
 
         function toggleEnlargedView(imageSrc) {
             const imageOverlay = document.querySelector('.image-overlay');
@@ -442,50 +484,102 @@
         function openEditForm(timestamp) {
             const editOverlay = document.getElementById('editOverlay');
             const editForm = document.getElementById('editForm');
-            const editComment = document.getElementById('editComment');
+            const editArbeitkarteNr = document.getElementById('editArbeitkarteNr');
+            const editKunde = document.getElementById('editkunde'); // Popraw nazwę identyfikatora
+            const editLieferfristDate = document.getElementById('editlieferfristDate'); // Popraw nazwę identyfikatora
+            const editLieferfristDateTime = document.getElementById('editlieferfristDateTime'); // Popraw nazwę identyfikatora
+            const editBorderColor = document.getElementById('editborderColor'); // Popraw nazwę identyfikatora
+            const editFelgenTyp = document.getElementById('editfelgenTyp'); // Popraw nazwę identyfikatora
+            const editKommentare = document.getElementById('editkommentare');
 
-            // Pobierz aktualny komentarz
+            // Pobierz aktualne dane
             const formList = document.getElementById('formList');
             const cardData = JSON.parse(formList.dataset.cards)[timestamp];
-            const currentComment = cardData.formData.kommentare || '';
 
-            editComment.value = currentComment; // Ustaw aktualny komentarz w polu tekstowym
+            // Sprawdź, czy formData i właściwość istnieją przed odczytaniem
+            const currentArbeitkarteNr = cardData?.formData?.arbeitkarteNr || '';
+            const currentKunde = cardData?.formData?.kunde || '';
+            const currentLieferfristDate = cardData?.formData?.lieferfristDate || '';
+            const currentLieferfristDateTime = cardData?.formData?.lieferfristDateTime || '';
+            const currentBorderColor = cardData?.formData?.borderColor || '';
+            const currentFelgenTyp = cardData?.formData?.felgenTyp || '';
+            const currentKommentare = cardData?.formData?.kommentare || '';
 
+            // Ustaw aktualne wartości w polach tekstowych
+            editArbeitkarteNr.value = currentArbeitkarteNr;
+            editKunde.value = currentKunde;
+            editLieferfristDate.value = currentLieferfristDate;
+            editLieferfristDateTime.value = currentLieferfristDateTime;
+            editBorderColor.value = currentBorderColor;
+            editFelgenTyp.value = currentFelgenTyp;
+            editKommentare.value = currentKommentare;
+
+            // Reszta kodu pozostaje bez zmian
             editOverlay.style.display = 'flex';
-            editForm.dataset.timestamp = timestamp; // Zapisz timestamp w atrybucie dataset
-
-            editComment.focus(); // Skupienie na polu tekstowym po otwarciu formularza
+            editForm.dataset.timestamp = timestamp;
+            editArbeitkarteNr.focus();
         }
 
         function saveEdit() {
-            const editOverlay = document.getElementById('editOverlay');
-            const editForm = document.getElementById('editForm');
-            const editComment = document.getElementById('editComment');
+            // Pobierz timestamp z dataset
+            const timestamp = document.getElementById('editForm').dataset.timestamp;
 
-            const timestamp = editForm.dataset.timestamp;
-            const newComment = editComment.value;
+            // Pobierz elementy formularza
+            const editArbeitkarteNr = document.getElementById('editArbeitkarteNr');
+            const editKunde = document.getElementById('editkunde');
+            const editLieferfristDate = document.getElementById('editlieferfristDate');
+            const editLieferfristDateTime = document.getElementById('editlieferfristDateTime');
+            const editBorderColor = document.getElementById('editborderColor');
+            const editFelgenTyp = document.getElementById('editfelgenTyp');
+            const editKommentare = document.getElementById('editkommentare');
 
-            fetch(`/edit-comment/${timestamp}`, {  // Zmiana endpointu na '/edit-comment/:timestamp'
+            // Sprawdź, czy elementy istnieją, zanim spróbujesz pobrać ich wartość
+            if (!editArbeitkarteNr || !editKunde || !editLieferfristDate || !editLieferfristDateTime || !editBorderColor || !editFelgenTyp || !editKommentare) {
+                console.error('Niektóre pola nie istnieją.');
+                return;
+            }
+
+            // Pobierz wartości z pól formularza
+            const arbeitkarteNrValue = editArbeitkarteNr.value;
+            const kundeValue = editKunde.value;
+            const lieferfristDateValue = editLieferfristDate.value;
+            const lieferfristDateTimeValue = editLieferfristDateTime.value;
+            const borderColorValue = editBorderColor.value;
+            const felgenTypValue = editFelgenTyp.value;
+            const kommentareValue = editKommentare.value;
+
+            // Stwórz obiekt z danymi do wysłania na serwer
+            const newFormData = {
+                arbeitkarteNr: arbeitkarteNrValue,
+                kunde: kundeValue,
+                lieferfristDate: lieferfristDateValue,
+                lieferfristDateTime: lieferfristDateTimeValue,
+                borderColor: borderColorValue,
+                felgenTyp: felgenTypValue,
+                kommentare: kommentareValue,
+            };
+
+            // Wyślij zaktualizowane dane na serwer
+            fetch(`/edit-comment/${timestamp}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    kommentare: newComment,
-                }),
+                body: JSON.stringify(newFormData),
             })
                 .then(response => response.text())
                 .then(data => {
                     console.log(data);
-                    alert('Kommentar wurde erfolgreich bearbeitet!');
-                    editOverlay.style.display = 'none'; // Ukrycie formularza edycji po zapisaniu
+                    alert('Dane zostały zaktualizowane.');
+                    document.getElementById('editOverlay').style.display = 'none'; // Ukrycie formularza edycji po zapisaniu
                     window.location.reload();
                 })
                 .catch(error => {
-                    console.error('Fehler beim Bearbeiten des Kommentars:', error);
-                    alert('Fehler beim Bearbeiten des Kommentars. Bitte versuchen Sie es erneut.');
+                    console.error('Błąd przy zapisie danych:', error);
+                    alert('Błąd przy zapisie danych. Spróbuj ponownie.');
                 });
         }
+
 
         function cancelEdit() {
             const editOverlay = document.getElementById('editOverlay');
