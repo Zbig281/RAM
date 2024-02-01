@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser'); // Dodano import body-parser
 const multer = require('multer');
@@ -172,6 +172,46 @@ app.post('/restore-in-progress/:timestamp', (req, res) => {
         });
     });
 });
+
+// Endpoint do edycji karty pracy Edycja
+app.put('/edit-comment/:timestamp', (req, res) => {
+    const timestamp = req.params.timestamp;
+    const updatedFields = req.body;
+
+    // Odczytaj aktualne dane z pliku data.json
+    const dataPath = 'public/data/data.json';
+    let data = {};
+    try {
+        const rawData = fs.readFileSync(dataPath);
+        data = JSON.parse(rawData);
+    } catch (error) {
+        console.error('Błąd odczytu pliku data.json:', error);
+        res.status(500).send('Błąd odczytu danych.');
+        return;
+    }
+
+    if (data[timestamp]) {
+        // Zaktualizuj pola na podstawie przesłanych danych
+        data[timestamp].formData = { ...data[timestamp].formData, ...updatedFields };
+
+        // Zapisz zaktualizowane dane z powrotem do pliku data.json
+        try {
+            fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+            res.send('Dane zostały zaktualizowane.');
+        } catch (error) {
+            console.error('Błąd zapisu pliku data.json:', error);
+            res.status(500).send('Błąd zapisu danych.');
+        }
+    } else {
+        res.status(404).send('Karta pracy nie znaleziona.');
+    }
+});
+
+
+
+
+
+
 
 app.listen(port, () => {
     console.log(`Serwer uruchomiony na http://localhost:${port}`);
