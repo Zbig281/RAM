@@ -1,4 +1,4 @@
-﻿<!-- public/neue-arbeitskarte.html -->
+﻿<!-- public/felge_neue_arbeitskarte.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -31,7 +31,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Neue Arbeitskarte</h1>
+        <h1>Neue Arbeitskarte für die Felge</h1>
         <form id="myForm">
             <label for="arbeitkarteNr">Arbeitkarte Nr:</label>
             <input type="text" id="arbeitkarteNr" name="arbeitkarteNr" required>
@@ -54,7 +54,7 @@
             <label for="felgenTyp">Felgen Typ:</label>
             <select id="felgenTyp" name="felgenTyp">
                 <option value="Mit Reifen">Mit Reifen</option>
-                <option value="Im Auto Montiert">Im Auto Montiert</option>
+                <option value="Im Auto Montiert">Einbau ins Fahrzeug</option>
                 <option value="Nur Felge">Nur Felge</option>
             </select>
 
@@ -110,7 +110,7 @@
                     console.log(data);
                     alert('Daten wurden erfolgreich gespeichert!');
                     // Przekieruj do strony listy
-                    window.location.href = "/arbeitkarten-list.html";
+                    window.location.href = "/felge_arbeitkarten_list.html";
                 })
                 .catch(error => {
                     console.error('Fehler beim Speichern der Daten:', error);
@@ -124,7 +124,7 @@
         }
 
         function back_liste() {
-            window.location.href = "/arbeitkarten-list.html";
+            window.location.href = "/felge_arbeitkarten_list.html";
         }
 
     </script>
