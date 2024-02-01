@@ -98,7 +98,6 @@ app.delete('/delete/:timestamp', (req, res) => {
     }
 });
 
-
 // Endpoint do oznaczania karty pracy jako zakończonej
 app.put('/complete/:timestamp', (req, res) => {
     const timestamp = req.params.timestamp;
@@ -206,12 +205,6 @@ app.put('/edit-comment/:timestamp', (req, res) => {
         res.status(404).send('Karta pracy nie znaleziona.');
     }
 });
-
-
-
-
-
-
 
 app.listen(port, () => {
     console.log(`Serwer uruchomiony na http://localhost:${port}`);

@@ -336,7 +336,8 @@
                     });
             }
         }
-
+        
+        //Cała mechanika wyswietlania kart pracy wraz z przyciskami. 
         function displayCards(data) {
             const activeFormList = document.getElementById('activeFormList');
             const completedFormList = document.getElementById('completedFormList');
@@ -447,7 +448,6 @@
             }
         }
 
-
         function toggleEnlargedView(imageSrc) {
             const imageOverlay = document.querySelector('.image-overlay');
             const enlargedImage = document.querySelector('.enlarged-image');
@@ -462,6 +462,7 @@
             }
         }
 
+        //usuwanie kartpracy z listy
         function deleteCard(timestamp) {
             const confirmation = confirm('Möchten Sie diese Arbeitskarte wirklich löschen?');
 
@@ -481,6 +482,8 @@
                     });
             }
         }
+
+        //Otwarcie edytora dla karty pracy i uzupełnienie jej aktualnemi danymi. 
         function openEditForm(timestamp) {
             const editOverlay = document.getElementById('editOverlay');
             const editForm = document.getElementById('editForm');
@@ -520,6 +523,7 @@
             editArbeitkarteNr.focus();
         }
 
+        //Zapisanie edycji karty pracy
         function saveEdit() {
             // Pobierz timestamp z dataset
             const timestamp = document.getElementById('editForm').dataset.timestamp;
@@ -580,7 +584,7 @@
                 });
         }
 
-
+        //Przerwanie edycji
         function cancelEdit() {
             const editOverlay = document.getElementById('editOverlay');
             const editForm = document.getElementById('editForm');
@@ -589,6 +593,7 @@
             editForm.dataset.timestamp = ''; // Czyszczenie timestamp z atrybutu dataset
         }
 
+        //Znaczenie karty pracy jako Kompletna
         function markAsCompleted(timestamp) {
             const confirmation = confirm('Möchten Sie diese Arbeitskarte als abgeschlossen markieren?');
 
@@ -631,6 +636,7 @@
             }
         }
 
+        //Opcja drukowania karty pracy
         function printCard(timestamp) {
             const cardContainer = document.getElementById(`card-${timestamp}`);
 
