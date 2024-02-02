@@ -584,13 +584,13 @@
                 .then(response => response.text())
                 .then(data => {
                     console.log(data);
-                    alert('Dane zostały zaktualizowane.');
+                    alert('Die Daten wurden aktualisiert.');
                     document.getElementById('editOverlay').style.display = 'none'; // Ukrycie formularza edycji po zapisaniu
                     window.location.reload();
                 })
                 .catch(error => {
-                    console.error('Błąd przy zapisie danych:', error);
-                    alert('Błąd przy zapisie danych. Spróbuj ponownie.');
+                    console.error('Fehler beim Speichern von Daten:', error);
+                    alert('Fehler beim Speichern von Daten. Bitte versuchen Sie es erneut.');
                 });
         }
 
