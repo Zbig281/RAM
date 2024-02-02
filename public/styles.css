@@ -161,3 +161,278 @@ button {
     top: 10px; /* Dostosuj odpowiednio do pozycji */
     right: 10px; /* Dostosuj odpowiednio do pozycji */
 }
+
+
+/*felge_arbeitkarten_list.html*/
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background: url('/Banner_JMueller.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    color: Black; /* Kolor tekstu na kontraście z tłem obrazu */
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.card-container {
+    display: flex;
+    border: 2px solid transparent;
+    transition: border-color 0.3s;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.info-container {
+    flex: 1;
+    padding: 10px;
+    background-color: #fff;
+    text-align: left; /* Zmiana na lewe wyrównanie tekstu */
+}
+
+.image-container {
+    flex: 2; /* Elastyczność */
+    text-align: center; /* Wyśrodkowanie tekstu */
+    padding: 10px; /* Padding na krawędziach */
+    position: relative; /* Pozycja relative */
+    overflow-x: auto; /* Przewijanie poziome */
+    white-space: nowrap; /* Uniemożliwienie zawijania do nowej linii */
+    max-width: 100%;
+    margin-left: 1px; /* Dodaj margin-left z odpowiednią wartością */
+}
+
+.card-container img {
+    max-width: 100px; /* Zmieniono szerokość obrazu na 100px ze skali % */
+    height: 100px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.image-container::-webkit-scrollbar {
+    height: 10px; /* Dodałem pionowy pasek przewijania */
+}
+
+.image-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Kolor pionowego paska przewijania */
+}
+
+.image-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Kolor tła pionowego paska przewijania */
+}
+
+.image-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.enlarged-image {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.aktivieren-button {
+    color: white;
+    background-color: #40a7d6;
+    border: none;
+    padding: 2px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 30px 1px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.delete-button {
+    color: white;
+    background-color: red;
+    border: none;
+    padding: 2px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 30px 1px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.edit-button {
+    color: white;
+    background-color: blue; /* Kolor dla przycisku "Bearbeiten" */
+    border: none;
+    padding: 2px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 30px 1px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.fertig-button {
+    background-color: green; /* Kolor dla przycisku "Fertig!" */
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 30px 1px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.print-button {
+    background-color: #4CAF50; /* Zielony kolor */
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 30px 1px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    /* Usunięto overflow-x: auto; aby umożliwić poziome przewijanie */
+}
+
+#activeFormList,
+#completedFormList {
+    margin-top: 20px; /* Dodaj odstęp od góry dla sekcji aktywnych i zakończonych kart pracy */
+}
+
+.edit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.edit-form {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+    .edit-form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .edit-form input,
+    .edit-form select,
+    .edit-form textarea {
+        width: calc(100% - 20px);
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .edit-form button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin-right: 5px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        .edit-form button.cancel {
+            background-color: #ccc;
+        }
+
+
+#searchBarContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+#searchInput {
+    padding: 8px;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#searchButton {
+    background-color: #40a7d6;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Dodaj to, aby przyciski były rozmieszczone równomiernie */
+}
+
+.refresh-button {
+    margin-left: 10px; /* Dodaj margines z lewej strony od przycisku "Neue Arbeitskarte Zurück" */
+    padding: 10px;
+    background-color: #7d7d7d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .refresh-button:hover {
+        background-color: #27ae60;
+    }
+
+.bold-text {
+    font-weight: bold;
+}
