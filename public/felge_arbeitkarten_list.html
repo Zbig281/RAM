@@ -287,6 +287,9 @@
             <label for="kommentare">Kommentare:</label>
             <textarea id="editkommentare" name="kommentare" rows="4"></textarea>
 
+            <label for="editImage">Neue Fotos hochladen:</label>
+            <input type="file" id="editImage" name="editImage" accept="image/*" multiple>
+            <div id="selectedEditPhotos"></div>
 
             <button onclick="saveEdit('someTimestamp')">Speichern</button>
             <button class="cancel" onclick="cancelEdit()">Abbrechen</button>
@@ -536,9 +539,10 @@
             const editBorderColor = document.getElementById('editborderColor');
             const editFelgenTyp = document.getElementById('editfelgenTyp');
             const editKommentare = document.getElementById('editkommentare');
+            const editImage = document.getElementById('editImage');
 
             // Sprawdź, czy elementy istnieją, zanim spróbujesz pobrać ich wartość
-            if (!editArbeitkarteNr || !editKunde || !editLieferfristDate || !editLieferfristDateTime || !editBorderColor || !editFelgenTyp || !editKommentare) {
+            if (!editArbeitkarteNr || !editKunde || !editLieferfristDate || !editLieferfristDateTime || !editBorderColor || !editFelgenTyp || !editKommentare || !editImage) {
                 console.error('Niektóre pola nie istnieją.');
                 return;
             }
@@ -552,24 +556,30 @@
             const felgenTypValue = editFelgenTyp.value;
             const kommentareValue = editKommentare.value;
 
-            // Stwórz obiekt z danymi do wysłania na serwer
-            const newFormData = {
-                arbeitkarteNr: arbeitkarteNrValue,
-                kunde: kundeValue,
-                lieferfristDate: lieferfristDateValue,
-                lieferfristDateTime: lieferfristDateTimeValue,
-                borderColor: borderColorValue,
-                felgenTyp: felgenTypValue,
-                kommentare: kommentareValue,
-            };
+            // Pobierz pliki z pola formularza
+            const imageFiles = editImage.files;
+
+            // Utwórz obiekt FormData
+            const formData = new FormData();
+
+            // Dodaj wartości z pól tekstowych do FormData
+            formData.append('arbeitkarteNr', arbeitkarteNrValue);
+            formData.append('kunde', kundeValue);
+            formData.append('lieferfristDate', lieferfristDateValue);
+            formData.append('lieferfristDateTime', lieferfristDateTimeValue);
+            formData.append('borderColor', borderColorValue);
+            formData.append('felgenTyp', felgenTypValue);
+            formData.append('kommentare', kommentareValue);
+
+            // Dodaj pliki do FormData
+            for (const file of imageFiles) {
+                formData.append('editImage', file);
+            }
 
             // Wyślij zaktualizowane dane na serwer
             fetch(`/edit-comment/${timestamp}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newFormData),
+                body: formData
             })
                 .then(response => response.text())
                 .then(data => {
@@ -685,7 +695,6 @@
                 console.error('Karte nicht gefunden:', timestamp);
             }
         }
-
     </script>
 </body>
 </html>

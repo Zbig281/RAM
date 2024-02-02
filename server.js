@@ -173,9 +173,10 @@ app.post('/restore-in-progress/:timestamp', (req, res) => {
 });
 
 // Endpoint do edycji karty pracy Edycja
-app.put('/edit-comment/:timestamp', (req, res) => {
+app.put('/edit-comment/:timestamp', upload.array('editImage', 20), (req, res) => {
     const timestamp = req.params.timestamp;
     const updatedFields = req.body;
+    const updatedImages = req.files.map(file => file.filename);
 
     // Odczytaj aktualne dane z pliku data.json
     const dataPath = 'public/data/data.json';
@@ -193,6 +194,15 @@ app.put('/edit-comment/:timestamp', (req, res) => {
         // Zaktualizuj pola na podstawie przesłanych danych
         data[timestamp].formData = { ...data[timestamp].formData, ...updatedFields };
 
+        // Dodaj nowe zdjęcia, jeśli są przesłane
+        if (updatedImages.length > 0) {
+            // Jeśli photos nie istnieje, stwórz nową tablicę
+            data[timestamp].photos = data[timestamp].photos || [];
+
+            // Dodaj nowe zdjęcia do tablicy
+            data[timestamp].photos = data[timestamp].photos.concat(updatedImages);
+        }
+
         // Zapisz zaktualizowane dane z powrotem do pliku data.json
         try {
             fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
@@ -205,6 +215,9 @@ app.put('/edit-comment/:timestamp', (req, res) => {
         res.status(404).send('Karta pracy nie znaleziona.');
     }
 });
+
+
+
 
 app.listen(port, () => {
     console.log(`Serwer uruchomiony na http://localhost:${port}`);

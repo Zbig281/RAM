@@ -80,26 +80,6 @@
             // Ustaw domyślną wartość completed na false jako boolean, nie jako string
             formData.set('completed', false);
 
-            // Pobierz aktualne dane
-            fetch('/data/data.json')
-                .then(response => response.json())
-                .then(data => {
-                    // Sprawdź, czy arbeitkarteNr już istnieje
-                    const arbeitkarteNr = formData.get('arbeitkarteNr');
-                    if (isArbeitkarteNrUnique(data, arbeitkarteNr)) {
-                        // Dodaj nowe dane tylko jeśli numer jest unikalny
-                        submitUniqueForm(formData);
-                    } else {
-                        alert('ArbeitkarteNr existiert bereits. Bitte geben Sie einen eindeutigen Wert ein.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Fehler beim Laden der Daten:', error);
-                    alert('Fehler beim Laden der Daten. Bitte versuchen Sie es erneut.');
-                });
-        }
-
-        function submitUniqueForm(formData) {
             // Wyślij formularz
             fetch('/submit', {
                 method: 'POST',
@@ -118,16 +98,10 @@
                 });
         }
 
-        function isArbeitkarteNrUnique(data, arbeitkarteNr) {
-            // Sprawdź, czy numer arbeitkarteNr jest unikalny
-            return !Object.values(data).some(cardData => cardData.formData.arbeitkarteNr === arbeitkarteNr);
-        }
-
         function back_liste() {
             window.location.href = "/felge_arbeitkarten_list.html";
         }
 
     </script>
-
 </body>
 </html>
