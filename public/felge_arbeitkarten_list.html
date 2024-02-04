@@ -74,12 +74,6 @@
             <button class="cancel" onclick="cancelEdit()">Abbrechen</button>
         </div>
     </div>
-    <!-- Przycisk szukania -->
-    <div id="searchBarContainer">
-        <input type="text" id="searchInput" placeholder="Suche ...">
-        <button id="searchButton" onclick="searchText()">Suche</button>
-    </div>
-
     <script>
         function neue_arbeitskarte() {
             window.location.href = "/felge_neue_arbeitskarte.html";
@@ -484,53 +478,6 @@
             } else {
                 console.error('Karte nicht gefunden:', timestamp);
             }
-        }
-
-        // Funkcja do wyszukiwania tekstu
-        function searchText() {
-            const searchInput = document.getElementById('searchInput');
-            const searchText = searchInput.value.toLowerCase();
-            const formList = document.getElementById('formList');
-            const cards = JSON.parse(formList.dataset.cards);
-
-            // Usuń poprzednie podświetlenie
-            removeHighlight();
-
-            // Iteruj przez karty
-            for (const [timestamp, cardData] of Object.entries(cards)) {
-                const cardContainer = document.getElementById(`card-${timestamp}`);
-                const cardText = JSON.stringify(cardData).toLowerCase();
-
-                // Sprawdź, czy karta zawiera szukany tekst
-                if (cardText.includes(searchText)) {
-                    // Podświetl znaleziony tekst na niebiesko
-                    highlightText(cardContainer, searchText);
-
-                    // Przewiń do znalezionego tekstu
-                    cardContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    break; // Zakończ pętlę po znalezieniu pierwszej karty pasującej do wyszukiwania
-                }
-            }
-        }
-
-        // Funkcja do podświetlania tekstu
-        function highlightText(element, searchText) {
-            const innerHTML = element.innerHTML;
-            const index = innerHTML.toLowerCase().indexOf(searchText);
-            if (index !== -1) {
-                const before = innerHTML.substring(0, index);
-                const after = innerHTML.substring(index + searchText.length);
-                element.innerHTML = `${before}<span style="background-color: #add8e6">${innerHTML.substr(index, searchText.length)}</span>${after}`;
-            }
-        }
-
-        // Funkcja do usuwania podświetlenia
-        function removeHighlight() {
-            const highlightedElements = document.querySelectorAll('span[style="background-color: #add8e6"]');
-            highlightedElements.forEach(element => {
-                const parent = element.parentNode;
-                parent.replaceChild(document.createTextNode(element.textContent), element);
-            });
         }
 
         // Przycisk "W górę"
