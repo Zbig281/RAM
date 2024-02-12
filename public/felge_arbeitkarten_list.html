@@ -131,8 +131,16 @@
             const originalActiveFormListTitle = activeFormList.querySelector('h2').textContent;
             const originalCompletedFormListTitle = completedFormList.querySelector('h2').textContent;
 
-            // Sortuj karty według terminu
+            // Sortuj karty według koloru (niebieskie, potem żółte) i następnie według daty
             const sortedData = Object.entries(data).sort((a, b) => {
+                // Sortowanie według koloru		
+                const colorOrder = { "red": 1, "blue": 2, "yellow": 3 }; // Kolejność kolorów: niebieski, żółty, czerwony
+                const colorComparison = colorOrder[a[1].formData.borderColor] - colorOrder[b[1].formData.borderColor];
+                if (colorComparison !== 0) {
+                    return colorComparison;
+                }
+
+                // Sortowanie według daty
                 const dateA = new Date(a[1].formData.lieferfristDateTime);
                 const dateB = new Date(b[1].formData.lieferfristDateTime);
                 return dateA - dateB;
